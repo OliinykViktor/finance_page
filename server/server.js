@@ -1,81 +1,98 @@
-'use strict';
-const express = require('express');
-const http = require('http');
-const io = require('socket.io');
-const cors = require('cors');
+  'use strict';
+  const express = require('express');
+  const http = require('http');
+  const io = require('socket.io');
+  const cors = require('cors');
+  const { v4: uuidv4 } = require('uuid')
 
-const FETCH_INTERVAL = 5000;
-const PORT = process.env.PORT || 4000;
+  const FETCH_INTERVAL = 5000;
+  const PORT = process.env.PORT || 4000;
 
-const tickers = [
-  'AAPL', // Apple
-  'GOOGL', // Alphabet
-  'MSFT', // Microsoft
-  'AMZN', // Amazon
-  'FB', // Facebook
-  'TSLA', // Tesla
-];
+  const tickers = [
+    'AAPL', // Apple
+    'GOOGL', // Alphabet
+    'MSFT', // Microsoft
+    'AMZN', // Amazon
+    'FB', // Facebook
+    'TSLA', // Tesla
+  ];
 
-function randomValue(min = 0, max = 1, precision = 0) {
-  const random = Math.random() * (max - min) + min;
-  return random.toFixed(precision);
-}
-
-function utcDate() {
-  const now = new Date();
-  return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
-}
-
-function getQuotes(socket) {
-
-  const quotes = tickers.map(ticker => ({
-    ticker,
-    exchange: 'NASDAQ',
-    price: randomValue(100, 300, 2),
-    change: randomValue(0, 200, 2),
-    change_percent: randomValue(0, 1, 2),
-    dividend: randomValue(0, 1, 2),
-    yield: randomValue(0, 2, 2),
-    last_trade_time: utcDate(),
-  }));
-
-  socket.emit('ticker', quotes);
-}
-
-function trackTickers(socket) {
-  // run the first time immediately
-  getQuotes(socket);
-
-  // every N seconds
-  const timer = setInterval(function() {
-    getQuotes(socket);
-  }, FETCH_INTERVAL);
-
-  socket.on('disconnect', function() {
-    clearInterval(timer);
-  });
-}
-
-const app = express();
-app.use(cors());
-const server = http.createServer(app);
-
-const socketServer = io(server, {
-  cors: {
-    origin: "*",
+  function randomValue(min = 0, max = 1, precision = 0) {
+    const random = Math.random() * (max - min) + min;
+    return random.toFixed(precision);
   }
-});
 
-app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/index.html');
-});
+  function utcDate() {
+    const now = new Date();
+    return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+  }
 
-socketServer.on('connection', (socket) => {
-  socket.on('start', () => {
-    trackTickers(socket);
+
+  function getQuotes(socket) {
+    const quotes = tickers.map(ticker => {
+      let previousPrice = previousPrices.get(ticker) || randomValue(100, 300, 2);
+      const priceChange = randomValue(-10, 10, 2);
+      const price = (parseFloat(previousPrice) + parseFloat(priceChange)).toFixed(2);
+      const change = priceChange;
+      const change_percent = ((change / previousPrice) * 100).toFixed(2);
+      const dividend = (randomValue(1, 10, 2) / 100) * parseFloat(price);
+      const yieldPercent = (dividend / parseFloat(price) * 100).toFixed(2);
+
+      previousPrices.set(ticker, price);
+      const id = uuidv4();
+      return {
+        id,
+        ticker,
+        exchange: 'NASDAQ',
+        price: price,
+        change: change,
+        change_percent: change_percent,
+        dividend: dividend,
+        yieldValue: yieldPercent,
+        last_trade_time: utcDate(),
+        added: false
+      };
+    });
+
+    socket.emit('ticker', quotes);
+  }
+
+  function trackTickers(socket) {
+    // run the first time immediately
+    getQuotes(socket);
+
+    // every N seconds
+    const timer = setInterval(function() {
+      getQuotes(socket);
+    }, FETCH_INTERVAL);
+
+    socket.on('disconnect', function() {
+      clearInterval(timer);
+    });
+  }
+
+  const app = express();
+  app.use(cors());
+  const server = http.createServer(app);
+
+  const socketServer = io(server, {
+    cors: {
+      origin: "*",
+    }
   });
-});
 
-server.listen(PORT, () => {
-  console.log(`Streaming service is running on http://localhost:${PORT}`);
-});
+  app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/index.html');
+  });
+
+  socketServer.on('connection', (socket) => {
+    socket.on('start', () => {
+      trackTickers(socket);
+    });
+  });
+
+  const previousPrices = new Map();
+
+  server.listen(PORT, () => {
+    console.log(`Streaming service is running on http://localhost:${PORT}`);
+  });
