@@ -8,21 +8,21 @@ This application is a solution for displaying real-time price data in the user i
 - The program should display real-time price changes for certain tickers.
 
 ## Bonus Features
-We have implemented the following bonus features:
+I have implemented the following bonus features:
 
 ### Visual Effects
-- In the case of negative price changes, the data field changes to red. In the case of positive price changes, the field changes to green.
-- Display of an icon using Material-UI in the form of an arrow indicating price growth or decline.
+- In the case of negative price changes, the data field becomes red. In the case of positive price changes, the field becomes green.
+- Icon display in the form of an arrow ( Material-UI is used) indicates the growth or decline of prices.
 
 ### Ticker Management
 - Users have the ability to add and remove tickers from their favorite list.
 
 ## Technologies Used
-- We used React with hooks.
-- For state management, we utilized Redux with Redux-Thunk.
-- To connect to the service, we employed Socket.io.
-- For data visualization, we used Material-UI.
-- For SEO optimization, we used React-Helmet.
+- I used React with hooks.
+- For state management, I utilized Redux with Redux-Thunk.
+- To connect to the service, I employed Socket.io.
+- For data visualization, I used Material-UI.
+- For SEO optimization, I used React-Helmet.
 ## Running the Application
 1. Start the local service by following the instructions in the "Starting the Local Service" section.
 2. Launch your application with the command npm start or yarn start.
