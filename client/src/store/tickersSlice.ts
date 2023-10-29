@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://localhost:4000";
+import startSocketConnected from "../utils/startSocketConnected";
+import { newData, tickersData } from "../type/type";
+import { RootState } from ".";
 
-const updateData = (state, action) => {
-
+const updateData = (state: tickersData, action: { payload: newData[] }) => {
   const newData = action.payload;
   state.data = newData.map((newItem) => {
     const existingItem = state.data.find(
@@ -15,22 +15,18 @@ const updateData = (state, action) => {
     }
     return newItem;
   });
-}
+};
 
 export const setTicker = createAsyncThunk(
   "tickers/setTicker",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const socket = socketIOClient(ENDPOINT);
-      socket.emit("start");
-
-      await new Promise((resolve) => {
-        socket.on("ticker", (data) => {
-          dispatch(setTickerData(data));
-          resolve(data);
-        });
-      });
-      return undefined;
+      const data = await startSocketConnected(
+        dispatch,
+        setTickerData,
+        rejectWithValue
+      );
+      return data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -42,12 +38,14 @@ const tickerSlice = createSlice({
   initialState: { data: [] },
   reducers: {
     setTickerData: (state, action) => {
-      updateData(state, action)
+      updateData(state, action);
     },
     toggleFavorite: (state, action) => {
       const { id } = action.payload;
-      const item = state.data.find((item) => item.id === id);
-      item ? (item.added = !item.added) : !item.added;
+      const item: newData = state.data.find((item: newData) => item.id === id);
+      if (item) {
+        item.added = !item.added;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -57,6 +55,6 @@ const tickerSlice = createSlice({
 
 export const { setTickerData, toggleFavorite } = tickerSlice.actions;
 
-export const selectTickerData = (state) => state.ticker.data;
+export const selectTickerData = (state:RootState) => state.ticker.data;
 
 export default tickerSlice.reducer;

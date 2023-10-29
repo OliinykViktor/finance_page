@@ -1,10 +1,7 @@
-import React, { FC } from 'react';
-import Helmet  from 'react-helmet';
+import { FC } from 'react';
+import Helmet from 'react-helmet';
 
-interface MetadataProps {
-    title: string;
-    content: string;
-  }
+import { MetadataProps } from '../type/type';
 
 const MetaData: FC<MetadataProps> = ({ title, content }) => {
     return (

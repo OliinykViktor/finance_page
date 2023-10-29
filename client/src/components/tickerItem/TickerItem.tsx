@@ -1,26 +1,15 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Card, IconButton, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
-import { toggleFavorite } from '../tickers/tickersSlice'
-
-import TrendingArrow from '../../ui/TrendingArrow';
 import { useDispatch } from 'react-redux';
 
-interface TickerItemProps {
-    id: number;
-    ticker: string;
-    exchange: string;
-    price: string;
-    change: string;
-    change_percent: string;
-    dividend: string;
-    yieldValue: string;
-    last_trade_time: string;
-    added: boolean;
-}
+import { toggleFavorite } from '../../store/tickersSlice'
+import TrendingArrow from '../../ui/TrendingArrow';
+import { newData } from '../../type/type';
+import { StyleParams } from '../../type/style.type';
 
-const TickerItem: FC<TickerItemProps> = ({
+const TickerItem: FC<newData> = ({
     id,
     ticker,
     exchange,
@@ -32,7 +21,7 @@ const TickerItem: FC<TickerItemProps> = ({
     const isChange = parseFloat(change);
     const dispatch = useDispatch()
 
-    const styles = {
+    const styles:StyleParams = {
         coloms: {
             minWidth: '100px',
         },

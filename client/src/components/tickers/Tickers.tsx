@@ -1,11 +1,13 @@
 import { FC, useEffect } from 'react';
 import { Typography, Container } from '@mui/material';
-import TickersItem from '../tickerItem/TickerItem';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectTickerData, setTicker } from './tickersSlice';
+
+import TickersItem from '../tickerItem/TickerItem';
+import { selectTickerData, setTicker } from '../../store/tickersSlice';
+import { newData } from "../../type/type";
 
 const Tickers: FC = () => {
-  const tickerData = useSelector(selectTickerData);
+  const tickerData: newData[] = useSelector(selectTickerData);
   const dispatch = useDispatch();
 
   useEffect(() => {

@@ -1,10 +1,7 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-
-interface TrendingArrowProps {
-    isUp: boolean;
-}
+import { TrendingArrowProps } from '../type/type';
 
 const TrendingArrow: FC<TrendingArrowProps> = ({ isUp }) => {
     return isUp

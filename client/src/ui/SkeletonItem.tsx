@@ -1,10 +1,13 @@
-import React,{FC} from 'react';
+import {FC} from 'react';
 import { Box, Skeleton } from '@mui/material';
+import { StyleParams } from '../type/style.type';
+
+
 
 const SkeletonItem:FC = () => {
-  const style = {
+  const style: StyleParams = {
     wrap: {
-      width: 90
+      width: '90px'
     },
   }
 

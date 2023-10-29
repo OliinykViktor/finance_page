@@ -1,9 +1,10 @@
-import React, {FC} from 'react';
+import {FC} from 'react';
 import { CardContent } from '@mui/material';
 import FavoriteItem from '../favoriteItem/FavoriteItem';
+import { StyleParams } from '../../type/style.type';
 
 const FavoriteTickers: FC = () => {
-  const style = {
+  const style :StyleParams = {
     card:{
       display:'flex', 
       justifyContent:'center'

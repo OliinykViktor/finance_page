@@ -1,38 +1,33 @@
-import React, {FC} from 'react';
+import {FC} from 'react';
 import { Box, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
 import ClearIcon from '@mui/icons-material/Clear';
 
-import { toggleFavorite } from '../tickers/tickersSlice'
+import { toggleFavorite } from '../../store/tickersSlice'
 import SkeletonItem from '../../ui/SkeletonItem';
-
-interface FavoriteItemProps {
-    id:string;
-    ticker:string;
-    price:string;
-    change_percent:string
-}
+import { newData } from '../../type/type';
+import { StyleParams } from '../../type/style.type';
+import { RootState } from '../../store';
 
 const FavoriteItem: FC = () => {
 
-    const createFav = createSelector((state) => state.ticker.data,
-        (favorites) =>
-            favorites.filter((item) => item.added === true
-            ))
-    const favorit = useSelector(createFav)
+    const createFav = createSelector((state:RootState) => state.ticker.data,
+        (favorites) => favorites.filter((item:newData) => item.added === true));
+
+    const favorit = useSelector(createFav);
 
     const dispatch = useDispatch();
 
-    const style = {
+    const style: StyleParams = {
         wrap: {
-            width: 90,
+            width: '90px',
             m: 1,
             backgroundColor: 'whitesmoke'
         },
         icon: {
-            width: 12,
-            height: 12,
+            width: '12px',
+            height: '12px',
             backgroundColor: 'lightsalmon',
             cursor: 'pointer'
         },
@@ -41,8 +36,8 @@ const FavoriteItem: FC = () => {
             justifyContent: 'space-between'
         },
         subtitle: {
-            width: 100,
-        }
+            width: '100px',
+        },
     }
     
     return (
@@ -53,7 +48,7 @@ const FavoriteItem: FC = () => {
                     ticker,
                     price,
                     change_percent
-                }:FavoriteItemProps) => (
+                }:newData) => (
                     <Box sx={style.wrap}
                         key={id}>
                         <Box sx={style.title}>

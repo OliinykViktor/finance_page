@@ -1,7 +1,8 @@
 import { FC } from 'react';
-import Tickers from '../components/tickers/Tickers';
-import FavoriteTickers from '../components/favoriteTickers/FavoriteTickers';
 import { Grid } from '@mui/material';
+
+import FavoriteTickers from '../components/favoriteTickers/FavoriteTickers';
+import Tickers from '../components/tickers/Tickers';
 import MetaData from '../utils/metadata';
 
 
