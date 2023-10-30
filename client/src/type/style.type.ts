@@ -11,8 +11,11 @@ export interface StyleParams {
       backgroundColor?:string;
     },
     card?:{
+      minWidth?:string;
       display?:string;
       justifyContent?:string;
+      backgroundColor?:string;
+
     },
     icon?:{
       width?:string;
